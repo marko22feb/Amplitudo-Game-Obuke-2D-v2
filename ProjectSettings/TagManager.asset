@@ -3,7 +3,9 @@
 --- !u!78 &1
 TagManager:
   serializedVersion: 2
-  tags: []
+  tags:
+  - Floor
+  - Unit
   layers:
   - Default
   - TransparentFX
@@ -13,13 +15,13 @@ TagManager:
   - UI
   - 
   - 
+  - Background
   - 
+  - Floor
   - 
+  - Unit
   - 
-  - 
-  - 
-  - 
-  - 
+  - Player
   - 
   - 
   - 
@@ -40,4 +42,16 @@ TagManager:
   m_SortingLayers:
   - name: Default
     uniqueID: 0
+    locked: 0
+  - name: Background
+    uniqueID: 1734774863
+    locked: 0
+  - name: Floor
+    uniqueID: 1321858723
+    locked: 0
+  - name: Unit
+    uniqueID: 2498821435
+    locked: 0
+  - name: Player
+    uniqueID: 978242011
     locked: 0
