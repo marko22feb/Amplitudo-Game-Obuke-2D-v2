@@ -5,7 +5,7 @@ using UnityEngine;
 public class Movement : MonoBehaviour
 {
     Transform tr;
-    Rigidbody2D rd2D;
+    public Rigidbody2D rd2D;
     BoxCollider2D boxCollider;
     public LayerMask layer = default;
     GameObject floor;
@@ -40,18 +40,22 @@ public class Movement : MonoBehaviour
             if (Input.GetButtonDown("Jump"))
             {
                 {
-                    Vector3 Velocity = new Vector3(rd2D.velocity.x, rd2D.velocity.y + JumpHeight, 0);
-                    rd2D.velocity = Velocity;
-                    anim.SetTrigger("DidJump");
+                    Jump(false);
                 }
             }
         }
     }
 
+    public void Jump(bool forced)
+    {
+        Vector3 Velocity = new Vector3(rd2D.velocity.x, rd2D.velocity.y + JumpHeight, 0);
+        rd2D.velocity = Velocity;
+        if (!forced) anim.SetTrigger("DidJump");
+    }
     private void Move(float value)
     {
         if (value != 0) {
-            Vector3 Velocity = new Vector3(rd2D.velocity.x + Speed * Input.GetAxis("Horizontal") * Time.deltaTime, rd2D.velocity.y, 0);
+            Vector3 Velocity = new Vector3(Speed * Input.GetAxis("Horizontal") * Time.deltaTime, rd2D.velocity.y, 0);
             rd2D.velocity = Velocity;
             anim.SetBool("IsMoving", true);
 
