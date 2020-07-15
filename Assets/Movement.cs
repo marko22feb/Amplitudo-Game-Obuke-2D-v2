@@ -10,6 +10,7 @@ public class Movement : MonoBehaviour
     public LayerMask layer = default;
     GameObject floor;
     Animator anim;
+    public bool isOnLadder = false;
     public float Speed = 0;
     public float JumpHeight = 2;
 
@@ -32,8 +33,10 @@ public class Movement : MonoBehaviour
 
     void Update()
     {
-
-        Move(Input.GetAxis("Horizontal"));
+        if (!isOnLadder)
+            Move(Input.GetAxis("Horizontal"));
+        else
+            MoveVertical(Input.GetAxis("Vertical"));
 
         if (IsOnGround())
         {
@@ -43,6 +46,39 @@ public class Movement : MonoBehaviour
                     Jump(false);
                 }
             }
+
+            if (Input.GetButtonDown("Crouch"))
+            {
+                {
+                    Crouch();
+                }
+            }
+            if (Input.GetButtonUp("Crouch"))
+            {
+                anim.SetBool("IsCrouching", false);
+            }
+        }
+    }
+
+    private void Crouch()
+    {
+        RaycastHit2D hit = Physics2D.Raycast(transform.position, Vector2.down, 1.1f, layer);
+        if (hit.collider != null)
+        {
+            if (hit.collider.gameObject.tag == "Ladder")
+            {
+                anim.SetBool("IsOnLadder", true);
+               
+                
+                rd2D.bodyType = RigidbodyType2D.Kinematic;
+                Vector3 newPosition = new Vector3(hit.collider.transform.position.x, hit.collider.transform.position.y - 2, hit.collider.transform.position.z);
+                transform.position = newPosition;
+                isOnLadder = true;
+            }   else
+            {
+                anim.SetBool("IsCrouching", true);
+            }
+
         }
     }
 
@@ -64,6 +100,17 @@ public class Movement : MonoBehaviour
                 tr.localRotation = new Quaternion(0, 180, 0, 0);
             }
             else tr.localRotation = new Quaternion(0, 0, 0, 0);
+        }
+        else anim.SetBool("IsMoving", false);
+    }
+
+    private void MoveVertical(float value)
+    {
+        if (value != 0)
+        {
+            Vector3 Velocity = new Vector3(0, Speed * Input.GetAxis("Vertical") * Time.deltaTime, 0);
+            rd2D.velocity = Velocity;
+            anim.SetBool("IsMoving", true);
         }
         else anim.SetBool("IsMoving", false);
     }

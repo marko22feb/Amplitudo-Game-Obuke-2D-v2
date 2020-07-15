@@ -36,7 +36,7 @@ public class EnemyMovement : MonoBehaviour
 
     private void Move()
     {
-        Vector3 Velocity = new Vector3(rb2d.velocity.x + speed * Time.deltaTime, rb2d.velocity.y, 0);
+        Vector3 Velocity = new Vector3(speed * Time.deltaTime, rb2d.velocity.y, 0);
         rb2d.velocity = Velocity;
 
         if (speed < 0)
@@ -74,7 +74,6 @@ public class EnemyMovement : MonoBehaviour
             if (collision.gameObject == patrolRoutePoints[0] || collision.gameObject == patrolRoutePoints[pointAmount - 1])
             {
                 speed = -speed;
-                Debug.Log("ChildCount: " + collision.transform.parent.childCount);
             }
         }
     }
