@@ -44,10 +44,6 @@ public class Movement : MonoBehaviour
 
     void Update()
     {
-        if (!isOnLadder)
-            Move(Input.GetAxis("Horizontal"));
-        else
-            MoveVertical(Input.GetAxis("Vertical"));
 
         if (Input.GetAxis("Horizontal") != 0)
         {
@@ -132,7 +128,7 @@ public class Movement : MonoBehaviour
     private void Move(float value)
     {
         if (value != 0) {
-            Vector3 Velocity = new Vector3(Speed * Input.GetAxis("Horizontal") * Time.deltaTime, rd2D.velocity.y, 0);
+            Vector3 Velocity = new Vector3(Speed * Input.GetAxis("Horizontal"), rd2D.velocity.y, 0);
             rd2D.velocity = Velocity;
             anim.SetBool("IsMoving", true);
 
@@ -149,7 +145,7 @@ public class Movement : MonoBehaviour
     {
         if (value != 0)
         {
-            Vector3 Velocity = new Vector3(0, Speed * Input.GetAxis("Vertical") * Time.deltaTime, 0);
+            Vector3 Velocity = new Vector3(0, Speed * Input.GetAxis("Vertical"), 0);
             rd2D.velocity = Velocity;
             anim.SetBool("IsMoving", true);
 
@@ -166,6 +162,11 @@ public class Movement : MonoBehaviour
 
     private void FixedUpdate()
     {
+        if (!isOnLadder)
+            Move(Input.GetAxis("Horizontal"));
+        else
+            MoveVertical(Input.GetAxis("Vertical"));
+
         IsBoardAbove();
     }
 }
