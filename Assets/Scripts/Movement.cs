@@ -36,7 +36,7 @@ public class Movement : MonoBehaviour
     void IsBoardAbove()
     {
         RaycastHit2D hit = Physics2D.BoxCast(boxCollider.bounds.center, boxCollider.bounds.size, 0, Vector2.up, 1.5f, layer);
-        if (hit.collider != null)
+        if (hit.collider != null && hit.collider.tag == "Board")
         {
             hit.collider.GetComponent<BoxCollider2D>().isTrigger = true;
         }
@@ -47,7 +47,7 @@ public class Movement : MonoBehaviour
 
         if (Input.GetAxis("Horizontal") != 0)
         {
-            if (Input.GetButtonDown("Jump"))
+            if (Input.GetButtonDown("Jump") && isOnLadder)
             {
                 ExitLadder(GameObject.Find("LadderTop(Clone)"));
                 Vector3 Velocity = new Vector3(Input.GetAxis("Horizontal") * 35, rd2D.velocity.y, 0);

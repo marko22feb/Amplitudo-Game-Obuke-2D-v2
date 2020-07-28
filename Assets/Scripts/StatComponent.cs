@@ -9,6 +9,9 @@ public class StatComponent : MonoBehaviour
     private Animator anim;
     private Movement move;
 
+    private Canvas MainHUD;
+    private Canvas DeathScreen;
+
     public float currentHealth;
     public float minimumHealth;
     public float maximumHealth;
@@ -24,6 +27,8 @@ public class StatComponent : MonoBehaviour
     void Awake()
     {
         HPSlider = GameObject.Find("HPSlider").GetComponent<Slider>();
+        MainHUD = GameObject.Find("MainHUD").GetComponent<Canvas>();
+        DeathScreen = GameObject.Find("DeathScreen").GetComponent<Canvas>();
         anim = GetComponent<Animator>();
         move = GetComponent<Movement>();
         UpdateSlider();
@@ -44,10 +49,18 @@ public class StatComponent : MonoBehaviour
             value = value * defenseMultiplayer;
             StartCoroutine(iFrames(2));
             anim.SetTrigger("GotHurt");
-            float currentJumpHeight = move.JumpHeight;
-            move.JumpHeight = move.JumpHeight * 1.4f;
-            move.Jump(true);
-            move.JumpHeight = currentJumpHeight;
+            if (move != null)
+            {
+                float currentJumpHeight = move.JumpHeight;
+                move.JumpHeight = move.JumpHeight * 1.4f;
+                move.Jump(true);
+                move.JumpHeight = currentJumpHeight;
+            } else
+            {
+                //FixLater
+            }
+
+            OnDeath();
         }
 
         currentHealth = currentHealth + value * valueMultiplayer;
@@ -60,7 +73,13 @@ public class StatComponent : MonoBehaviour
 
     void OnDeath()
     {
-
+        if (move == null) return;
+        if (currentHealth <= minimumHealth)
+        {
+            Time.timeScale = 0f;
+            MainHUD.enabled = false;
+            DeathScreen.enabled = true;
+        }
     }
 
     IEnumerator iFrames (float timeAmount)

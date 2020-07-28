@@ -5,6 +5,8 @@ using UnityEngine;
 public class DamageComponent : MonoBehaviour
 {
     StatComponent myStats;
+    public bool IsTrap;
+    public float damageByTrap = 0;
 
     void Awake()
     {
@@ -17,7 +19,13 @@ public class DamageComponent : MonoBehaviour
 
         if (otherStats != null)
         {
-            otherStats.ModifyHealthBy(-Random.Range(myStats.minimumDamage, myStats.maximumDamage), myStats.damageMultiplayer);
+            if (!IsTrap)
+            {
+                otherStats.ModifyHealthBy(-Random.Range(myStats.minimumDamage, myStats.maximumDamage), myStats.damageMultiplayer);
+            } else
+            {
+                otherStats.ModifyHealthBy(-damageByTrap, 1f);
+            }
         }
     }
 }

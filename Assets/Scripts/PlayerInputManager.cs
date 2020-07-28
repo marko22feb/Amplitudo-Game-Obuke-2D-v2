@@ -20,6 +20,7 @@ public class PlayerInputManager : MonoBehaviour
     public void Start()
     {
         GameController.Control.Load();
+        Time.timeScale = 1f;
     }
     void Update()
     {
