@@ -8,6 +8,7 @@ public class StatComponent : MonoBehaviour
     public Slider HPSlider;
     private Animator anim;
     private Movement move;
+    private EnemyMovement Emove;
 
     private Canvas MainHUD;
     private Canvas DeathScreen;
@@ -31,6 +32,7 @@ public class StatComponent : MonoBehaviour
         DeathScreen = GameObject.Find("DeathScreen").GetComponent<Canvas>();
         anim = GetComponent<Animator>();
         move = GetComponent<Movement>();
+        Emove = GetComponent<EnemyMovement>();
         UpdateSlider();
     }
 
@@ -49,6 +51,9 @@ public class StatComponent : MonoBehaviour
             value = value * defenseMultiplayer;
             StartCoroutine(iFrames(2));
             anim.SetTrigger("GotHurt");
+            if (Emove != null)
+                Emove.IsStunned = true;
+
             if (move != null)
             {
                 float currentJumpHeight = move.JumpHeight;
@@ -68,13 +73,23 @@ public class StatComponent : MonoBehaviour
         if (currentHealth < minimumHealth) OnDeath();
         if (currentHealth > maximumHealth) currentHealth = maximumHealth;
 
+        if (Emove != null)
+            anim.SetFloat("CurrentHP", currentHealth);
+
         UpdateSlider();
     }
 
     void OnDeath()
     {
-        if (move == null) return;
-        if (currentHealth <= minimumHealth)
+        if (currentHealth > minimumHealth) return;
+
+        if (move == null)
+        {
+            if (Emove != null)
+                Emove.IsStunned = true;
+            StartCoroutine(DelayDestroySelf(2f));
+        }
+        else
         {
             Time.timeScale = 0f;
             MainHUD.enabled = false;
@@ -82,13 +97,26 @@ public class StatComponent : MonoBehaviour
         }
     }
 
+    IEnumerator DelayDestroySelf (float delayTime)
+    {
+        yield return new WaitForSeconds(delayTime);
+        Destroy(gameObject);
+    }
+
     IEnumerator iFrames (float timeAmount)
     {
         CanBeDamaged = false;
         Physics2D.IgnoreLayerCollision(14, 15, true);
         yield return new WaitForSeconds(timeAmount);
-        CanBeDamaged = true;
-        Physics2D.IgnoreLayerCollision(14, 15, false);
+        if (currentHealth > minimumHealth)
+        {
+            CanBeDamaged = true;
+            Physics2D.IgnoreLayerCollision(14, 15, false);
+            anim.SetTrigger("HurtOver");
+
+            if (Emove != null)
+                Emove.IsStunned = false;
+        }
 
         StopCoroutine(iFrames(1f));
     }

@@ -8,6 +8,7 @@ using UnityEngine.SceneManagement;
 public class GameController : MonoBehaviour
 {
     public static GameController Control;
+    public bool IsNewGame = false;
     public int Coins;
     public float TimeElapsed;
 
@@ -60,6 +61,7 @@ public class GameController : MonoBehaviour
 
             Coins = save.Coins;
             player.GetComponent<StatComponent>().currentHealth = save.CurrentHP;
+            if (SceneManager.GetActiveScene().buildIndex == save.lastPlayedScene)
             player.transform.position = new Vector3(save.playerPositionX, save.playerPositionY, save.playerPositionZ);
 
             file.Close();

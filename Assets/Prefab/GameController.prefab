@@ -43,5 +43,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3730251791c41d3479210615d438335e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  IsNewGame: 0
   Coins: 0
   TimeElapsed: 0

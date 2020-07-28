@@ -185,6 +185,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4572707a912961f4a96d58e183f18548, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  IsTrap: 0
+  damageByTrap: 0
 --- !u!114 &2185144259624405143
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -197,5 +199,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ffe9f024ac2a4d3439089cd3f13247b6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  IsStunned: 0
   speed: 550
   patrolRoute: {fileID: 0}

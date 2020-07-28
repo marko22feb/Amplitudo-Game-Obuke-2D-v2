@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class EnemyMovement : MonoBehaviour
 {
+    public bool IsStunned = false;
     public float speed;
     private Rigidbody2D rb2d;
     public GameObject patrolRoute;
@@ -36,6 +37,12 @@ public class EnemyMovement : MonoBehaviour
 
     private void Move()
     {
+        if (IsStunned) {
+            Vector3 vel = new Vector3(0, 0, 0);
+            rb2d.velocity = vel;
+            return;
+        }
+
         Vector3 Velocity = new Vector3(speed * Time.deltaTime, rb2d.velocity.y, 0);
         rb2d.velocity = Velocity;
 
