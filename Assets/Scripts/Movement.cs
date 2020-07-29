@@ -3,16 +3,30 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class Movement : MonoBehaviour
-{
-    Transform tr;
-    public Rigidbody2D rd2D;
+{    
+    Transform tr;    
     BoxCollider2D boxCollider;
-    public LayerMask layer = default;
     GameObject floor;
-    Animator anim;
+    GameObject UP;
+    GameObject DOWN;
+
+    [HideInInspector]
+    public Animator anim;
+
+    [HideInInspector]
+    public bool isUsingUItoMove = false;
+
+    [Header("Refferences")]
+    public Rigidbody2D rd2D;
+    public LayerMask layer = default;
+
+    [Header("Ladder")]
     public GameObject bottomLadder = null;
+    public bool canExitLadder = true;
     public bool isOnLadder = false;
     public bool isNearLadder = false;
+
+    [Header("Stats")]
     public float Speed = 0;
     public float JumpHeight = 2;
 
@@ -23,6 +37,14 @@ public class Movement : MonoBehaviour
         boxCollider = GetComponent<BoxCollider2D>();
         anim = GetComponent<Animator>();
         floor = GameObject.Find("FloorHolder");
+        UP = GameObject.Find("VerticalUp");
+        DOWN = GameObject.Find("VerticalDown");
+    }
+
+    private void Start()
+    {
+        UP.SetActive(false);
+        DOWN.SetActive(false);
     }
 
     bool IsOnGround()
@@ -78,7 +100,7 @@ public class Movement : MonoBehaviour
         }
     }
 
-    private void Crouch()
+    public void Crouch()
     {
         RaycastHit2D hit = Physics2D.Raycast(transform.position, Vector2.down, 1.1f, layer);
         if (hit.collider != null)
@@ -86,8 +108,8 @@ public class Movement : MonoBehaviour
             if (hit.collider.gameObject.tag == "Ladder")
             {
                 hit.collider.GetComponent<BoxCollider2D>().isTrigger = true;
-                transform.position = hit.collider.transform.position;
                 EnterLadder();
+                StartCoroutine(delayLadderExit(hit.collider.transform));
             }
             else if (hit.collider.gameObject.tag == "Board")
             {
@@ -103,13 +125,20 @@ public class Movement : MonoBehaviour
         anim.SetBool("IsOnLadder", true);
         rd2D.gravityScale = 0;
         isOnLadder = true;
+        UP.SetActive(true);
+        DOWN.SetActive(true);
     }
     public void ExitLadder(GameObject LadderTop)
     {
+        if (!canExitLadder) return;
         isOnLadder = false;
         anim.SetBool("IsOnLadder", false);
         rd2D.gravityScale = 7;
         LadderTop.GetComponent<BoxCollider2D>().isTrigger = false;
+        UP.SetActive(false);
+        DOWN.SetActive(false);
+        UP.GetComponent<AndroidMovementUI>().LetGoOfButton();
+        DOWN.GetComponent<AndroidMovementUI>().LetGoOfButton();
     }
 
     public void Jump(bool forced)
@@ -125,10 +154,11 @@ public class Movement : MonoBehaviour
             transform.position = bottomLadder.transform.position;
         }
     }
-    private void Move(float value)
+
+    public void Move(float value)
     {
         if (value != 0) {
-            Vector3 Velocity = new Vector3(Speed * Input.GetAxis("Horizontal"), rd2D.velocity.y, 0);
+            Vector3 Velocity = new Vector3(Speed * value, rd2D.velocity.y, 0);
             rd2D.velocity = Velocity;
             anim.SetBool("IsMoving", true);
 
@@ -138,14 +168,15 @@ public class Movement : MonoBehaviour
             }
             else tr.localRotation = new Quaternion(0, 0, 0, 0);
         }
-        else anim.SetBool("IsMoving", false);
+        
+        else { anim.SetBool("IsMoving", false); Vector3 Velocity = new Vector3(0, rd2D.velocity.y, 0); }
     }
 
-    private void MoveVertical(float value)
+    public void MoveVertical(float value)
     {
         if (value != 0)
         {
-            Vector3 Velocity = new Vector3(0, Speed * Input.GetAxis("Vertical"), 0);
+            Vector3 Velocity = new Vector3(0, Speed * value, 0);
             rd2D.velocity = Velocity;
             anim.SetBool("IsMoving", true);
 
@@ -160,13 +191,23 @@ public class Movement : MonoBehaviour
         else anim.SetBool("IsMoving", false);
     }
 
+    IEnumerator delayLadderExit(Transform tr)
+    {
+        canExitLadder = false;
+        transform.position = tr.position;
+        yield return new WaitForSeconds(0.1f);
+        canExitLadder = true;
+    }
+
     private void FixedUpdate()
     {
-        if (!isOnLadder)
-            Move(Input.GetAxis("Horizontal"));
-        else
-            MoveVertical(Input.GetAxis("Vertical"));
-
+        if (!isUsingUItoMove)
+        {
+            if (!isOnLadder)
+                Move(Input.GetAxis("Horizontal"));
+            else
+                MoveVertical(Input.GetAxis("Vertical"));
+        }
         IsBoardAbove();
     }
 }
