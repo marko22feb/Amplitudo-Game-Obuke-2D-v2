@@ -43,11 +43,15 @@ public class StatComponent : MonoBehaviour
         HPSlider.value = currentHealth;
     }
 
-    public void ModifyHealthBy(float value, float valueMultiplayer)
+    public void ModifyHealthBy(float value, float valueMultiplayer, bool IgnoreIframes)
     {
         if (value < 0)
         {
-            if (!CanBeDamaged) return;
+            if (!IgnoreIframes)
+            {
+                if (!CanBeDamaged) return;
+            }
+
             value = value * defenseMultiplayer;
             StartCoroutine(iFrames(2));
             anim.SetTrigger("GotHurt");
@@ -76,6 +80,7 @@ public class StatComponent : MonoBehaviour
         if (Emove != null)
             anim.SetFloat("CurrentHP", currentHealth);
 
+        if (move != null)
         UpdateSlider();
     }
 

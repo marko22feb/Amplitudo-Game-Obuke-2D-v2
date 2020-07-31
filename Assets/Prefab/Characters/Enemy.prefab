@@ -187,6 +187,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   IsTrap: 0
   damageByTrap: 0
+  ignoreIframes: 0
 --- !u!114 &2185144259624405143
 MonoBehaviour:
   m_ObjectHideFlags: 0
