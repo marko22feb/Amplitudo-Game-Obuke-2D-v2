@@ -17,7 +17,6 @@ public class PrepareTrap : MonoBehaviour
         if (Application.isPlaying) return;
         b2d.size = new Vector2(trapSize * colliderSize, colliderSize);
         b2d.offset = new Vector2(-(trapSize * colliderSize / 2) - .75f, 0f);
-        Debug.Log("UpdateCalled");
     }
 #endif
 }

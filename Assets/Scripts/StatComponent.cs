@@ -9,6 +9,7 @@ public class StatComponent : MonoBehaviour
     private Animator anim;
     private Movement move;
     private EnemyMovement Emove;
+    private SpriteRenderer sr;
 
     private Canvas MainHUD;
     private Canvas DeathScreen;
@@ -30,6 +31,7 @@ public class StatComponent : MonoBehaviour
         HPSlider = GameObject.Find("HPSlider").GetComponent<Slider>();
         MainHUD = GameObject.Find("MainHUD").GetComponent<Canvas>();
         DeathScreen = GameObject.Find("DeathScreen").GetComponent<Canvas>();
+        sr = GetComponent<SpriteRenderer>();
         anim = GetComponent<Animator>();
         move = GetComponent<Movement>();
         Emove = GetComponent<EnemyMovement>();
@@ -53,6 +55,8 @@ public class StatComponent : MonoBehaviour
             }
 
             value = value * defenseMultiplayer;
+            if (value == 0) return;
+
             StartCoroutine(iFrames(2));
             anim.SetTrigger("GotHurt");
             if (Emove != null)
@@ -124,5 +128,21 @@ public class StatComponent : MonoBehaviour
         }
 
         StopCoroutine(iFrames(1f));
+        
+    }
+
+    public IEnumerator PowerUp(float duration)
+    {
+        float currentDamageMultiplayer = damageMultiplayer;
+        float currentDefenseMultiplayer = defenseMultiplayer;
+        Color currentColor = sr.color;
+
+        sr.color = Color.blue;
+        damageMultiplayer = damageMultiplayer * 2f;
+        defenseMultiplayer = 0f;
+        yield return new WaitForSeconds(duration);
+        damageMultiplayer = currentDamageMultiplayer;
+        defenseMultiplayer = currentDefenseMultiplayer;
+        sr.color = currentColor;
     }
 }

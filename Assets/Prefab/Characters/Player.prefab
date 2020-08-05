@@ -30,13 +30,13 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4339410165918083203}
-  m_LocalRotation: {x: 0, y: 1, z: 0, w: 0}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 0, y: 180, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!50 &4339410165918083215
 Rigidbody2D:
   serializedVersion: 4
@@ -214,3 +214,6 @@ MonoBehaviour:
   InfoText: {fileID: 6942648605577122053, guid: b70d06054123351409ff2852fceb2a99,
     type: 3}
   IsNearLever: 0
+  CanShoot: 0
+  projectilePrefab: {fileID: 8479222741439850213, guid: 41bec7c9ef168aa47bd17b4a07a1e6ad,
+    type: 3}

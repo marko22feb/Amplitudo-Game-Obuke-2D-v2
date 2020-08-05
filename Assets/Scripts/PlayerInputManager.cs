@@ -10,8 +10,10 @@ public class PlayerInputManager : MonoBehaviour
     public Lever lever;
     public GameObject InfoText;
     public bool IsNearLever = false;
+    public bool CanShoot = false;
     Canvas MainHud;
     GameObject TextPanel;
+    public GameObject projectilePrefab;
 
     public void Awake()
     {
@@ -35,6 +37,11 @@ public class PlayerInputManager : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.F8))
         {
             GameController.Control.LoadLastSavedScene();
+        }
+
+        if (Input.GetButtonDown("Projectile"))
+        {
+            Shoot();
         }
     }
 
@@ -73,5 +80,15 @@ public class PlayerInputManager : MonoBehaviour
                 }
             }
         }
+    }
+
+    public void Shoot()
+    {
+        if (!CanShoot) return;
+        int facingRight = 1;
+        if (transform.localRotation.y != 0) facingRight = -1;
+        GameObject temp = Instantiate(projectilePrefab);
+        temp.transform.position = new Vector2(transform.position.x + facingRight, transform.position.y);
+        temp.GetComponent<Rigidbody2D>().velocity = new Vector2(10f * facingRight, 0);
     }
 }

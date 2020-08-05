@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class AutoSave : MonoBehaviour
 {
@@ -9,7 +10,12 @@ public class AutoSave : MonoBehaviour
     {
         if (!AlreadySaved)
         {
-            GameController.Control.Save();
+            if (GameController.Control.GetLastPlayedScene() == SceneManager.GetActiveScene().buildIndex)
+            {
+                if (GameController.Control.GetLastAutoSaveName() == this.name) return;
+            }
+
+            GameController.Control.Save(this.name);
         }
     }
 }

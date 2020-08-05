@@ -125,8 +125,11 @@ public class Movement : MonoBehaviour
         anim.SetBool("IsOnLadder", true);
         rd2D.gravityScale = 0;
         isOnLadder = true;
-        UP.SetActive(true);
-        DOWN.SetActive(true);
+        if (Application.platform == RuntimePlatform.Android)
+        {
+            UP.SetActive(true);
+            DOWN.SetActive(true);
+        }
     }
     public void ExitLadder(GameObject LadderTop)
     {

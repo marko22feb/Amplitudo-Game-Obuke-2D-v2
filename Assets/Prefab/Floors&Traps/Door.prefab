@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 8965978854029090999}
   - component: {fileID: 8965978854029090998}
   - component: {fileID: 8965978854029091001}
+  - component: {fileID: 8863633466442867698}
   m_Layer: 0
   m_Name: Door
   m_TagString: Untagged
@@ -72,3 +73,17 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Locked: 1
   coinsRequired: 10
+--- !u!114 &8863633466442867698
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8965978854029091000}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fa05a8f2a6c638f44b02b21b8d44b3b7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  InteractCanvas: {fileID: 7112458969850381023, guid: c0842dd047316964c8c5da0e6f9e87de,
+    type: 3}

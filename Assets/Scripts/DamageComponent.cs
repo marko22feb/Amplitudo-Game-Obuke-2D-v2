@@ -22,7 +22,7 @@ public class DamageComponent : MonoBehaviour
         {
             if (!IsTrap)
             {
-                if (transform.position.y + .3f >= collision.transform.position.y)
+                if (transform.position.y + .3f >= collision.transform.position.y && otherStats.defenseMultiplayer != 0)
                     otherStats.ModifyHealthBy(-Random.Range(myStats.minimumDamage, myStats.maximumDamage), myStats.damageMultiplayer, false);
                 else myStats.ModifyHealthBy(-Random.Range(otherStats.minimumDamage, otherStats.maximumDamage), otherStats.damageMultiplayer, false);
             }

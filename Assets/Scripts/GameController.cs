@@ -31,7 +31,7 @@ public class GameController : MonoBehaviour
         TimeElapsed = Time.deltaTime + TimeElapsed;
     }
 
-    public void Save()
+    public void Save(string AutoSave)
     {
         SaveGame save = new SaveGame();
         BinaryFormatter bf = new BinaryFormatter();
@@ -44,6 +44,7 @@ public class GameController : MonoBehaviour
         save.playerPositionY = player.transform.position.y;
         save.playerPositionZ = player.transform.position.z;
         save.lastPlayedScene = SceneManager.GetActiveScene().buildIndex;
+        save.lastUsedAutoSave = AutoSave;
 
         bf.Serialize(file, save);
         file.Close();
@@ -84,6 +85,34 @@ public class GameController : MonoBehaviour
     {
         return true;
     }
+
+    public int GetLastPlayedScene()
+    {
+        SaveGame save = new SaveGame();
+        BinaryFormatter bf = new BinaryFormatter();
+        FileStream file = File.Open(Application.persistentDataPath + "/gamesave.123", FileMode.Open);
+        save = (SaveGame)bf.Deserialize(file);
+
+        int temp = save.lastPlayedScene;
+
+        file.Close();
+
+        return temp;
+    }
+
+    public string GetLastAutoSaveName()
+    {
+        SaveGame save = new SaveGame();
+        BinaryFormatter bf = new BinaryFormatter();
+        FileStream file = File.Open(Application.persistentDataPath + "/gamesave.123", FileMode.Open);
+        save = (SaveGame)bf.Deserialize(file);
+
+        string temp = save.lastUsedAutoSave;
+
+        file.Close();
+
+        return temp;
+    }
 }
 
 [System.Serializable]
@@ -92,6 +121,7 @@ public class SaveGame
     public int Coins;
     public float CurrentHP;
     public int lastPlayedScene;
+    public string lastUsedAutoSave;
 
     public float playerPositionX;
     public float playerPositionY;
