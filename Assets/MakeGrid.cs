@@ -1,6 +1,8 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
+using UnityEngine.Tilemaps;
 
 public class MakeGrid : MonoBehaviour
 {
@@ -9,6 +11,8 @@ public class MakeGrid : MonoBehaviour
 
     public List<GameObject> NavGrid;
     public GameObject nodePrefab;
+
+    public Tilemap floorTM;
 
     public void GenerateNavGrid()
     {
@@ -21,8 +25,12 @@ public class MakeGrid : MonoBehaviour
                 NavGrid.Add(temp);
                 temp.GetComponent<Node>().graphPosition = new Vector2(x, y);
                 temp.name = ("Node (" + x + "-" + y + ")");
+                temp.GetComponent<Node>().floorTM = floorTM;
+                temp.GetComponent<Node>().CheckIfCanExist();
             }
         }
+
+        NavGrid = NavGrid.Where(item => item != null).ToList();
 
         GenerateNeighbors();
     }
@@ -78,6 +86,46 @@ public class MakeGrid : MonoBehaviour
             {
                 Node nodeToCheck = ob.GetComponent<Node>();
                 if (nodeToCheck.graphPosition.x == currentNode.graphPosition.x && nodeToCheck.graphPosition.y + 1 == currentNode.graphPosition.y)
+                {
+                    currentNode.neighbors.Add(nodeToCheck.gameObject);
+                }
+            }
+
+            // Up Left
+            foreach (GameObject ob in NavGrid)
+            {
+                Node nodeToCheck = ob.GetComponent<Node>();
+                if (nodeToCheck.graphPosition.x + 1 == currentNode.graphPosition.x && nodeToCheck.graphPosition.y - 1 == currentNode.graphPosition.y)
+                {
+                    currentNode.neighbors.Add(nodeToCheck.gameObject);
+                }
+            }
+
+            // Up Right
+            foreach (GameObject ob in NavGrid)
+            {
+                Node nodeToCheck = ob.GetComponent<Node>();
+                if (nodeToCheck.graphPosition.x - 1 == currentNode.graphPosition.x && nodeToCheck.graphPosition.y - 1 == currentNode.graphPosition.y)
+                {
+                    currentNode.neighbors.Add(nodeToCheck.gameObject);
+                }
+            }
+
+            // Down Left
+            foreach (GameObject ob in NavGrid)
+            {
+                Node nodeToCheck = ob.GetComponent<Node>();
+                if (nodeToCheck.graphPosition.x + 1 == currentNode.graphPosition.x && nodeToCheck.graphPosition.y + 1 == currentNode.graphPosition.y)
+                {
+                    currentNode.neighbors.Add(nodeToCheck.gameObject);
+                }
+            }
+
+            // Down Right
+            foreach (GameObject ob in NavGrid)
+            {
+                Node nodeToCheck = ob.GetComponent<Node>();
+                if (nodeToCheck.graphPosition.x - 1 == currentNode.graphPosition.x && nodeToCheck.graphPosition.y + 1 == currentNode.graphPosition.y)
                 {
                     currentNode.neighbors.Add(nodeToCheck.gameObject);
                 }

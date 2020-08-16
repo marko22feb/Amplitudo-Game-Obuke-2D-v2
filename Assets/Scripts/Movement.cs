@@ -30,6 +30,10 @@ public class Movement : MonoBehaviour
     public float Speed = 0;
     public float JumpHeight = 2;
 
+    public List<Collider2D> allTheTouchingNodes;
+    public bool ShouldCheck = false;
+    public bool CheckStarted = false;
+
     private void Awake()
     {
         tr = GetComponent<Transform>();
@@ -155,6 +159,16 @@ public class Movement : MonoBehaviour
         {
             EnterLadder();
             transform.position = bottomLadder.transform.position;
+        }
+    }
+
+    private void OnTriggerStay2D(Collider2D collision)
+    {
+        if (ShouldCheck)
+        {
+            CheckStarted = true;
+            allTheTouchingNodes.Add(collision);
+            ShouldCheck = false;
         }
     }
 

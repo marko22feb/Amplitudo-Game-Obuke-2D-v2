@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.Tilemaps;
 
 public class Node : MonoBehaviour
 {
@@ -11,11 +12,23 @@ public class Node : MonoBehaviour
     public float weight = float.MaxValue;
     public Transform previousNode = null;
     private FindShortestPath FSP;
+    public Tilemap floorTM;
 
     public void Awake()
     {
         FSP = GameObject.Find("NavGrid").GetComponent<FindShortestPath>();
         sr = GetComponent<SpriteRenderer>();
+    }
+
+    public void CheckIfCanExist()
+    {
+        Vector3Int nodePosition = new Vector3Int(Mathf.FloorToInt(transform.position.x), Mathf.FloorToInt(transform.position.y), Mathf.FloorToInt(transform.position.z));
+        TileBase temp = floorTM.GetTile(nodePosition);
+
+        if (temp != null)
+        {
+            DestroyImmediate(gameObject);
+        }
     }
 
     public void ResetNode()
@@ -27,6 +40,7 @@ public class Node : MonoBehaviour
 
     public void OnMouseDown()
     {
+        /*
         Debug.Log("Clicked");
         if (FSP.StartNode == null)
         {
@@ -40,5 +54,6 @@ public class Node : MonoBehaviour
                 FSP.FindPath();
             }
         }
+        */
     }
 }

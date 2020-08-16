@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class EnemyMovement : MonoBehaviour
@@ -10,11 +11,118 @@ public class EnemyMovement : MonoBehaviour
     public GameObject patrolRoute;
     private GameObject[] patrolRoutePoints;
 
+    public List<Collider2D> allTheTouchingNodes;
+    public List<Transform> navPoints;
+    public bool ShouldCheck = false;
+    public bool CheckStarted = false;
+    public bool CheckIsRunning = false;
+    Vector3 startPosition;
+
     private void Awake()
     {
         rb2d = GetComponent<Rigidbody2D>();
     }
 
+    private void Update()
+    {
+        if (Input.GetButtonDown("Interact") && !CheckStarted)
+        {
+            ShouldCheck = true;
+        }
+
+        if (Input.GetButtonUp("Interact"))
+        {
+            ShouldCheck = false;
+        }
+    }
+
+    private void OnTriggerStay2D(Collider2D collision)
+    {
+        if (ShouldCheck)
+        {
+            CheckStarted = true;
+            allTheTouchingNodes.Add(collision);
+            if (!CheckIsRunning)
+            {
+                StartCoroutine(DelayFindList());
+            }
+        }
+    }
+
+    IEnumerator DelayFindList()
+    {
+        CheckIsRunning = true;
+        yield return new WaitForSeconds(0.05f);
+        GameObject.Find("NavGrid").GetComponent<FindShortestPath>().StartNode = ClosestNode();
+        GameObject Player = GameObject.Find("Player");
+
+        
+        Player.GetComponent<Movement>().ShouldCheck = true;
+        yield return new WaitForSeconds(0.1f);
+
+        GameObject.Find("NavGrid").GetComponent<FindShortestPath>().EndNode = Player.GetComponent<Movement>().allTheTouchingNodes[0].transform;
+        GameObject.Find("NavGrid").GetComponent<FindShortestPath>().FindPath();
+        yield return new WaitForSeconds(0.1f);
+        navPoints = GameObject.Find("NavGrid").GetComponent<FindShortestPath>().path;
+        ShouldCheck = false;
+        CheckStarted = false;
+        MoveOnNavPath();
+        CheckIsRunning = false;
+    }
+
+    public void MoveOnNavPath()
+    {
+        if (navPoints.Count < 1) return;
+
+        float alpha = 0;
+        float speed = 2.5f;
+
+        startPosition = transform.position;
+
+        StartCoroutine(MoveOnNavPathCor(alpha, speed));
+    }
+
+    IEnumerator MoveOnNavPathCor(float alpha, float speed)
+    {
+        yield return new WaitForSeconds(0.00001f);
+        if (navPoints.Count < 1)
+        {
+            allTheTouchingNodes.Clear();
+            GameObject Player = GameObject.Find("Player");
+            Player.GetComponent<Movement>().allTheTouchingNodes.Clear();
+            StopCoroutine(MoveOnNavPathCor(alpha, speed));
+        }
+
+        alpha += Time.deltaTime * speed;
+        transform.position = Vector3.Lerp(startPosition, navPoints[0].position, alpha);
+
+        if (alpha >= 1)
+        {
+            alpha = 0;
+            navPoints.Remove(navPoints[0]);
+            navPoints = navPoints.Where(item => item != null).ToList();
+            startPosition = transform.position;
+        }
+        StartCoroutine(MoveOnNavPathCor(alpha, speed));
+    }
+    private Transform ClosestNode()
+    {
+        float distance = Mathf.Infinity;
+        Transform closestNode = null;
+
+        foreach (Collider2D col in allTheTouchingNodes)
+        {
+            float tempDist = Vector3.Distance(col.transform.position, transform.position);
+            if (tempDist < distance)
+            {
+                distance = tempDist;
+                closestNode = col.transform;
+            }
+        }
+
+        return closestNode;
+    }
+    /*
     private void Start()
     {
         DetectDirection();
@@ -89,4 +197,5 @@ public class EnemyMovement : MonoBehaviour
     {
         Move();
     }
+    */
 }
