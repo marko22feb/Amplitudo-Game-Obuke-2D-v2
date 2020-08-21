@@ -11,6 +11,7 @@ public class MakeGrid : MonoBehaviour
 
     public List<GameObject> NavGrid;
     public GameObject nodePrefab;
+    private BoxCollider2D col2D;
 
     public Tilemap floorTM;
 
@@ -29,7 +30,9 @@ public class MakeGrid : MonoBehaviour
                 temp.GetComponent<Node>().CheckIfCanExist();
             }
         }
-
+        col2D = GetComponent<BoxCollider2D>();
+        col2D.size = new Vector2(SizeX, SizeY);
+        col2D.offset = new Vector2(SizeX / 2 - 0.5f, SizeY / 2 - 0.5f);
         NavGrid = NavGrid.Where(item => item != null).ToList();
 
         GenerateNeighbors();

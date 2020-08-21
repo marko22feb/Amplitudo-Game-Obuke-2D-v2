@@ -10,22 +10,26 @@ public class EnemyMovement : MonoBehaviour
     private Rigidbody2D rb2d;
     public GameObject patrolRoute;
     private GameObject[] patrolRoutePoints;
-
+    private FindShortestPath FSP;
+    
     public List<Collider2D> allTheTouchingNodes;
     public List<Transform> navPoints;
+
     public bool ShouldCheck = false;
     public bool CheckStarted = false;
     public bool CheckIsRunning = false;
+    public bool CanCheckAgain = true;
     Vector3 startPosition;
 
     private void Awake()
     {
         rb2d = GetComponent<Rigidbody2D>();
+        FSP = GameObject.Find("NavGrid").GetComponent<FindShortestPath>();
     }
 
     private void Update()
     {
-        if (Input.GetButtonDown("Interact") && !CheckStarted)
+        if (Input.GetButtonDown("Interact"))
         {
             ShouldCheck = true;
         }
@@ -34,6 +38,18 @@ public class EnemyMovement : MonoBehaviour
         {
             ShouldCheck = false;
         }
+        /*       if (FSP.IsPlayerInsideOfNavGrid && CanCheckAgain)
+               {
+                   ShouldCheck = true;
+                   CanCheckAgain = false;
+               }
+
+               if (!FSP.IsPlayerInsideOfNavGrid)
+               {
+                   ShouldCheck = false;
+
+              }  
+               */
     }
 
     private void OnTriggerStay2D(Collider2D collision)
@@ -41,6 +57,7 @@ public class EnemyMovement : MonoBehaviour
         if (ShouldCheck)
         {
             CheckStarted = true;
+            ShouldCheck = false;
             allTheTouchingNodes.Add(collision);
             if (!CheckIsRunning)
             {
@@ -53,17 +70,17 @@ public class EnemyMovement : MonoBehaviour
     {
         CheckIsRunning = true;
         yield return new WaitForSeconds(0.05f);
-        GameObject.Find("NavGrid").GetComponent<FindShortestPath>().StartNode = ClosestNode();
+        FSP.StartNode = ClosestNode();
         GameObject Player = GameObject.Find("Player");
 
         
         Player.GetComponent<Movement>().ShouldCheck = true;
         yield return new WaitForSeconds(0.1f);
 
-        GameObject.Find("NavGrid").GetComponent<FindShortestPath>().EndNode = Player.GetComponent<Movement>().allTheTouchingNodes[0].transform;
-        GameObject.Find("NavGrid").GetComponent<FindShortestPath>().FindPath();
+        FSP.EndNode = Player.GetComponent<Movement>().allTheTouchingNodes[0].transform;
+        FSP.FindPath();
         yield return new WaitForSeconds(0.1f);
-        navPoints = GameObject.Find("NavGrid").GetComponent<FindShortestPath>().path;
+        navPoints = FSP.path;
         ShouldCheck = false;
         CheckStarted = false;
         MoveOnNavPath();
@@ -91,19 +108,22 @@ public class EnemyMovement : MonoBehaviour
             GameObject Player = GameObject.Find("Player");
             Player.GetComponent<Movement>().allTheTouchingNodes.Clear();
             StopCoroutine(MoveOnNavPathCor(alpha, speed));
+            CanCheckAgain = true;
         }
-
-        alpha += Time.deltaTime * speed;
-        transform.position = Vector3.Lerp(startPosition, navPoints[0].position, alpha);
-
-        if (alpha >= 1)
+        else
         {
-            alpha = 0;
-            navPoints.Remove(navPoints[0]);
-            navPoints = navPoints.Where(item => item != null).ToList();
-            startPosition = transform.position;
+            alpha += Time.deltaTime * speed;
+            transform.position = Vector3.Lerp(startPosition, navPoints[0].position, alpha);
+
+            if (alpha >= 1)
+            {
+                alpha = 0;
+                navPoints.Remove(navPoints[0]);
+                navPoints = navPoints.Where(item => item != null).ToList();
+                startPosition = transform.position;
+            }
+            StartCoroutine(MoveOnNavPathCor(alpha, speed));
         }
-        StartCoroutine(MoveOnNavPathCor(alpha, speed));
     }
     private Transform ClosestNode()
     {

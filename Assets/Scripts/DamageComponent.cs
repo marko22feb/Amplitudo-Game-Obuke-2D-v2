@@ -8,6 +8,7 @@ public class DamageComponent : MonoBehaviour
     public bool IsTrap;
     public float damageByTrap = 0;
     public bool ignoreIframes = false;
+    public GameObject Owner;
 
     void Awake()
     {
@@ -16,6 +17,8 @@ public class DamageComponent : MonoBehaviour
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
+        if (Owner == collision.gameObject) return;
+
         StatComponent otherStats = collision.gameObject.GetComponent<StatComponent>();
 
         if (otherStats != null)
@@ -35,6 +38,8 @@ public class DamageComponent : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
+        if (Owner == collision.gameObject) return;
+
         StatComponent otherStats = collision.gameObject.GetComponent<StatComponent>();
 
         if (otherStats != null)

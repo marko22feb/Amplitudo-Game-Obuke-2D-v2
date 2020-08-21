@@ -10,6 +10,8 @@ public class FindShortestPath : MonoBehaviour
     public List<Transform> path;
     private List<GameObject> nodes;
 
+    public bool IsPlayerInsideOfNavGrid = false;
+
     public void FindPath()
     {
         path = findShortestPath(StartNode, EndNode);
@@ -86,5 +88,17 @@ public class FindShortestPath : MonoBehaviour
         }
 
         return end;
+    }
+
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (collision.tag == "Player")
+        IsPlayerInsideOfNavGrid = true;
+    }
+
+    private void OnTriggerExit2D(Collider2D collision)
+    {
+        if (collision.tag == "Player")
+            IsPlayerInsideOfNavGrid = false;
     }
 }
