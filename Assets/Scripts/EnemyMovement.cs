@@ -9,13 +9,15 @@ public class EnemyMovement : MonoBehaviour
     public float speed;
     private Rigidbody2D rb2d;
     public GameObject patrolRoute;
+    private GameObject Player;
     private GameObject[] patrolRoutePoints;
     private FindShortestPath FSP;
+    private Transform NodeToGoTo = null;
     
     public List<Collider2D> allTheTouchingNodes;
     public List<Transform> navPoints;
+    public LayerMask lm;
 
-    public bool ShouldCheck = false;
     public bool CheckStarted = false;
     public bool CheckIsRunning = false;
     public bool CanCheckAgain = true;
@@ -25,66 +27,52 @@ public class EnemyMovement : MonoBehaviour
     {
         rb2d = GetComponent<Rigidbody2D>();
         FSP = GameObject.Find("NavGrid").GetComponent<FindShortestPath>();
+        Player = GameObject.Find("Player");
     }
 
     private void Update()
     {
-        if (Input.GetButtonDown("Interact"))
+        if (FSP.IsPlayerInsideOfNavGrid && CanCheckAgain)
         {
-            ShouldCheck = true;
+            GetAllTouchingColliders();
         }
-
-        if (Input.GetButtonUp("Interact"))
-        {
-            ShouldCheck = false;
-        }
-        /*       if (FSP.IsPlayerInsideOfNavGrid && CanCheckAgain)
-               {
-                   ShouldCheck = true;
-                   CanCheckAgain = false;
-               }
-
-               if (!FSP.IsPlayerInsideOfNavGrid)
-               {
-                   ShouldCheck = false;
-
-              }  
-               */
     }
 
-    private void OnTriggerStay2D(Collider2D collision)
+    public void GetAllTouchingColliders()
     {
-        if (ShouldCheck)
-        {
-            CheckStarted = true;
-            ShouldCheck = false;
-            allTheTouchingNodes.Add(collision);
-            if (!CheckIsRunning)
-            {
-                StartCoroutine(DelayFindList());
-            }
-        }
+        CanCheckAgain = false;
+        ContactFilter2D contactFilter = new ContactFilter2D();
+        contactFilter.SetLayerMask(lm);
+        contactFilter.useLayerMask = true;
+        contactFilter.useTriggers = true;
+
+        GetComponent<BoxCollider2D>().OverlapCollider(contactFilter, allTheTouchingNodes);
+        StartCoroutine(DelayFindList());
     }
 
     IEnumerator DelayFindList()
     {
         CheckIsRunning = true;
-        yield return new WaitForSeconds(0.05f);
         FSP.StartNode = ClosestNode();
-        GameObject Player = GameObject.Find("Player");
 
-        
-        Player.GetComponent<Movement>().ShouldCheck = true;
-        yield return new WaitForSeconds(0.1f);
+        Player.GetComponent<Movement>().GetAllTouchingColliders(lm);
+        yield return new WaitForEndOfFrame();
 
-        FSP.EndNode = Player.GetComponent<Movement>().allTheTouchingNodes[0].transform;
-        FSP.FindPath();
-        yield return new WaitForSeconds(0.1f);
-        navPoints = FSP.path;
-        ShouldCheck = false;
-        CheckStarted = false;
-        MoveOnNavPath();
-        CheckIsRunning = false;
+        if (Player.GetComponent<Movement>().allTheTouchingNodes.Count > 0)
+        {
+            FSP.EndNode = Player.GetComponent<Movement>().allTheTouchingNodes[0].transform;
+            NodeToGoTo = FSP.EndNode;
+            FSP.FindPath();
+            yield return new WaitForEndOfFrame();
+            navPoints = FSP.path;
+            CheckStarted = false;
+            MoveOnNavPath();
+            CheckIsRunning = false;
+        } else
+        {
+            CanCheckAgain = true;
+            StopCoroutine(DelayFindList());
+        }
     }
 
     public void MoveOnNavPath()
@@ -121,7 +109,14 @@ public class EnemyMovement : MonoBehaviour
                 navPoints.Remove(navPoints[0]);
                 navPoints = navPoints.Where(item => item != null).ToList();
                 startPosition = transform.position;
+                Player.GetComponent<Movement>().GetAllTouchingColliders(lm);
+                if (NodeToGoTo != Player.GetComponent<Movement>().allTheTouchingNodes[0].transform)
+                {
+                    StopCoroutine(MoveOnNavPathCor(alpha, speed));
+                    CanCheckAgain = true;
+                }
             }
+            if (!CanCheckAgain)
             StartCoroutine(MoveOnNavPathCor(alpha, speed));
         }
     }

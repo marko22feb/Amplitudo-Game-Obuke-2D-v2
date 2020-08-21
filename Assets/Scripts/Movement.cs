@@ -31,8 +31,6 @@ public class Movement : MonoBehaviour
     public float JumpHeight = 2;
 
     public List<Collider2D> allTheTouchingNodes;
-    public bool ShouldCheck = false;
-    public bool CheckStarted = false;
 
     private void Awake()
     {
@@ -49,6 +47,16 @@ public class Movement : MonoBehaviour
     {
         UP.SetActive(false);
         DOWN.SetActive(false);
+    }
+
+    public void GetAllTouchingColliders (LayerMask lm)
+    {
+        ContactFilter2D contactFilter = new ContactFilter2D();
+        contactFilter.SetLayerMask(lm);
+        contactFilter.useLayerMask = true;
+        contactFilter.useTriggers = true;
+
+        GetComponent<BoxCollider2D>().OverlapCollider(contactFilter, allTheTouchingNodes);
     }
 
     bool IsOnGround()
@@ -159,16 +167,6 @@ public class Movement : MonoBehaviour
         {
             EnterLadder();
             transform.position = bottomLadder.transform.position;
-        }
-    }
-
-    private void OnTriggerStay2D(Collider2D collision)
-    {
-        if (ShouldCheck)
-        {
-            CheckStarted = true;
-            allTheTouchingNodes.Add(collision);
-            ShouldCheck = false;
         }
     }
 

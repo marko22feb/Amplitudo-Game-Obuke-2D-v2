@@ -39680,6 +39680,31 @@ Transform:
   m_Father: {fileID: 5454217722298566694}
   m_RootOrder: 297
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1205561998 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 5344922427469271012, guid: e8a0d6647e34aea4d8a3f9b484feba91,
+    type: 3}
+  m_PrefabInstance: {fileID: 2133988646}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1205561999
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1205561998}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 06a212ea0bf8380498f238ea76a85ddb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  NumberOfWaves: 1
+  NumberOfAbility: 1
+  FrequencyOfAbility: 0
+  AbilityCooldown: 3
+  cooldownExpired: 0
+  instantiatePrefab: {fileID: 0}
+  CasterRefference: {fileID: 0}
 --- !u!1 &1205921839
 GameObject:
   m_ObjectHideFlags: 0
@@ -41387,6 +41412,7 @@ GameObject:
   - component: {fileID: 1277665209}
   - component: {fileID: 1277665208}
   - component: {fileID: 1277665210}
+  - component: {fileID: 1277665211}
   m_Layer: 0
   m_Name: Boss
   m_TagString: Untagged
@@ -41573,14 +41599,31 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 80d98b45b99288649adba6fef95c7804, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ProjectilePrefab: {fileID: 8479222741439850213, guid: 41bec7c9ef168aa47bd17b4a07a1e6ad,
-    type: 3}
+  abilities:
+  - {fileID: 1277665211}
+  - {fileID: 1205561999}
+  ShouldTeleportToCenterOfNavGrid: 1
   NavGrid: {fileID: 0}
-  NumberOfProjectileWaves: 3
-  WavesCount: 0
-  NumberOfProjectiles: 50
-  FrequencyOfProjectile: 0.5
-  ProjectileAbilityCooldown: 10
+--- !u!114 &1277665211
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1277665202}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9c5d52573a62eb64cbad17a2c8bad20f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  NumberOfWaves: 3
+  NumberOfAbility: 20
+  FrequencyOfAbility: 0.5
+  AbilityCooldown: 15
+  cooldownExpired: 0
+  instantiatePrefab: {fileID: 8479222741439850213, guid: 41bec7c9ef168aa47bd17b4a07a1e6ad,
+    type: 3}
+  CasterRefference: {fileID: 0}
 --- !u!1 &1291582191
 GameObject:
   m_ObjectHideFlags: 0
@@ -58021,6 +58064,14 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1009282297, guid: 27b6d40277dcea941ab448c39a545f8b, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 9.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 1009282297, guid: 27b6d40277dcea941ab448c39a545f8b, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 9
+      objectReference: {fileID: 0}
     - target: {fileID: 2981371692117846684, guid: 27b6d40277dcea941ab448c39a545f8b,
         type: 3}
       propertyPath: m_Name
@@ -59732,7 +59783,7 @@ PrefabInstance:
     - target: {fileID: 4339410165918083208, guid: 89cfa85eb0e35e449bfd5dd10372e220,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: 5.47
+      value: 4.76
       objectReference: {fileID: 0}
     - target: {fileID: 4339410165918083208, guid: 89cfa85eb0e35e449bfd5dd10372e220,
         type: 3}
