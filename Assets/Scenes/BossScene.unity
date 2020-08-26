@@ -39701,8 +39701,9 @@ MonoBehaviour:
   NumberOfWaves: 1
   NumberOfAbility: 1
   FrequencyOfAbility: 0
-  AbilityCooldown: 3
-  cooldownExpired: 0
+  AbilityCooldown: 7
+  cooldownExpired: 1
+  AC: {fileID: 0}
   instantiatePrefab: {fileID: 0}
   CasterRefference: {fileID: 0}
 --- !u!1 &1205921839
@@ -41602,8 +41603,27 @@ MonoBehaviour:
   abilities:
   - {fileID: 1277665211}
   - {fileID: 1205561999}
-  ShouldTeleportToCenterOfNavGrid: 1
+  abilityData:
+  - activateData:
+      activateOn: 1
+      operation: 2
+      Value: 9
+      timerValue: 0
+    baseData:
+      abilityType: 0
+      damageType: 0
+      ShouldTeleportToCenterOfNavGrid: 1
+  - activateData:
+      activateOn: 1
+      operation: 2
+      Value: 9
+      timerValue: 0
+    baseData:
+      abilityType: 0
+      damageType: 0
+      ShouldTeleportToCenterOfNavGrid: 0
   NavGrid: {fileID: 0}
+  IsUsingAbility: 0
 --- !u!114 &1277665211
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -41618,9 +41638,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   NumberOfWaves: 3
   NumberOfAbility: 20
-  FrequencyOfAbility: 0.5
+  FrequencyOfAbility: 2.5
   AbilityCooldown: 15
   cooldownExpired: 0
+  AC: {fileID: 0}
   instantiatePrefab: {fileID: 8479222741439850213, guid: 41bec7c9ef168aa47bd17b4a07a1e6ad,
     type: 3}
   CasterRefference: {fileID: 0}

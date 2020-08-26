@@ -11,6 +11,7 @@ public class BaseAbility : MonoBehaviour
 
     public bool cooldownExpired;
 
+    public AbilityComponent AC;
     public GameObject instantiatePrefab;
     public GameObject CasterRefference;
 
@@ -18,7 +19,9 @@ public class BaseAbility : MonoBehaviour
 
     public virtual void OnNotifyReceived(GameObject Caster)
     {
+
         CasterRefference = Caster;
+        StopCoroutine(Cooldown());
         StartCoroutine(Cooldown());
         if (FrequencyOfAbility != 0)
         StartCoroutine(Frequency());

@@ -6,8 +6,12 @@ public class Ability_ProjectileRain : BaseAbility
 {
     public override void OnNotifyReceived(GameObject Caster)
     {
+        AC.IsUsingAbility = true;
         WavesCount++;
-        if (NumberOfWaves < WavesCount) return;
+        if (NumberOfWaves < WavesCount) {
+            AC.IsUsingAbility = false;
+            return;
+        }
 
         for (int i = 0; i < NumberOfAbility; i++)
         {
